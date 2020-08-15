@@ -1,6 +1,6 @@
 
 
-import sys, random
+import sys
 from PySide2.QtGui import QPen, QPainter, QPixmap
 from PySide2.QtCore import QObject, Qt, QTimer, QRect
 from PySide2.QtWidgets import *
