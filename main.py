@@ -14,6 +14,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         # Создание формы и Ui (наш дизайн)
         self.setupUi(self)
         self.loadImage()
+        self.drawSomething()
         # Показать наше окно
         self.show()
         self.actionQuit.triggered.connect(self.quitHandler)
@@ -24,6 +25,8 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionUndo.triggered.connect(self.undoHandler)
         self.actionColor.triggered.connect(self.colorHandler)
         self.currentTool = None
+        self.last_x, self.last_y = None, None
+        self.currentColor = None
 
     def uncheckedAll(self):
         self.actionPen.setChecked(False)
@@ -73,6 +76,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.currentTool = self.actionColor
         color = QColorDialog.getColor()
         # self.textEdit.setTextColor(color)
+        self.currentColor = color
         print('Coloring', color)
 
     def loadImage(self):
@@ -80,6 +84,40 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.picture.setPixmap(picture)
         self.picture.setGeometry(QRect(10, 40, picture.width(), picture.height()))
 
+    def drawSomething(self):
+        painter = QPainter(self.picture.pixmap())
+        painter.drawLine(10, 10, 300, 200)
+        painter.end()
+
+    # def mouseMoveEvent(self, e):
+    #     painter = QPainter(self.picture.pixmap())
+    #     painter.drawPoint(e.x(), e.y())
+    #     painter.end()
+    #     self.update()
+
+    def mouseMoveEvent(self, e):
+        if self.last_x is None:  # First event.
+            self.last_x = e.x()
+            self.last_y = e.y()
+            return  # Ignore the first time.
+
+        painter = QPainter(self.picture.pixmap())
+        p = painter.pen()
+        p.setWidth(10)
+        # p.setColor('#ff0000')
+        p.setColor(self.currentColor)
+        painter.setPen(p)
+        painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
+        painter.end()
+        self.update()
+
+        # Update the origin for next time.
+        self.last_x = e.x()
+        self.last_y = e.y()
+
+    def mouseReleaseEvent(self, e):
+        self.last_x = None
+        self.last_y = None
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

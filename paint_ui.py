@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'calc_ui.ui'
+## Form generated from reading UI file 'paint_ui.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.0
 ##
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(917, 583)
         MainWindow.setStyleSheet(u"background-color: rgb(239, 239, 239);")
-        MainWindow.setDocumentMode(False)
+        MainWindow.setDocumentMode(True)
         self.action = QAction(MainWindow)
         self.action.setObjectName(u"action")
         self.action_2 = QAction(MainWindow)
@@ -80,9 +80,6 @@ class Ui_MainWindow(object):
         self.picture = QLabel(self.centralwidget)
         self.picture.setObjectName(u"picture")
         self.picture.setGeometry(QRect(10, 0, 47, 14))
-        self.canvas = QGraphicsView(self.centralwidget)
-        self.canvas.setObjectName(u"canvas")
-        self.canvas.setGeometry(QRect(110, 70, 256, 192))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
