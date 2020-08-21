@@ -23,14 +23,32 @@
    <widget class="QLabel" name="picture">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>0</y>
-      <width>47</width>
-      <height>14</height>
+      <width>881</width>
+      <height>531</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="cursor">
+     <cursorShape>CrossCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 204, 83);</string>
+    </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
    </widget>
   </widget>
@@ -78,6 +96,9 @@
    <addaction name="actionUndo"/>
    <addaction name="actionBin"/>
    <addaction name="actionColor"/>
+   <addaction name="separator"/>
+   <addaction name="actionPlus"/>
+   <addaction name="actionMinus"/>
   </widget>
   <action name="action">
    <property name="text">
@@ -189,6 +210,24 @@
    </property>
    <property name="text">
     <string>Color</string>
+   </property>
+  </action>
+  <action name="actionPlus">
+   <property name="icon">
+    <iconset>
+     <normaloff>ico/plus.png</normaloff>ico/plus.png</iconset>
+   </property>
+   <property name="text">
+    <string>Plus</string>
+   </property>
+  </action>
+  <action name="actionMinus">
+   <property name="icon">
+    <iconset>
+     <normaloff>ico/minus.png</normaloff>ico/minus.png</iconset>
+   </property>
+   <property name="text">
+    <string>Minus</string>
    </property>
   </action>
  </widget>

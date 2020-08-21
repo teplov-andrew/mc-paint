@@ -1,22 +1,37 @@
 
 
 import sys
-from PySide2.QtGui import QPen, QPainter, QPixmap
-from PySide2.QtCore import QObject, Qt, QTimer, QRect
+from PySide2.QtGui import QPen, QPainter, QPixmap, QPalette, QColor
+from PySide2.QtCore import QObject, Qt, QTimer, QRect, QSize
 from PySide2.QtWidgets import *
 from paint_ui import Ui_MainWindow
 
+
+class Color(QWidget):
+
+    def __init__(self, color, *args, **kwargs):
+        super(Color, self).__init__(*args, **kwargs)
+        self.setAutoFillBackground(True)
+
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor(color))
+        self.setPalette(palette)
 
 class Paint(QMainWindow, Ui_MainWindow, QWidget):
     # Конструктор класса
     def __init__(self):
         super().__init__()
+        self.canvasOffsetX = 40
+        self.canvasOffsetY = 25
+        self.zoomState = 1
+
         # Создание формы и Ui (наш дизайн)
         self.setupUi(self)
         self.loadImage()
-        self.drawSomething()
+
         # Показать наше окно
         self.show()
+
         self.actionQuit.triggered.connect(self.quitHandler)
         self.actionPen.triggered.connect(self.penHandler)
         self.actionErase.triggered.connect(self.eraseHandler)
@@ -24,9 +39,14 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionPipette.triggered.connect(self.pipetteHandler)
         self.actionUndo.triggered.connect(self.undoHandler)
         self.actionColor.triggered.connect(self.colorHandler)
+        self.actionPlus.triggered.connect(self.zoomInHandler)
+        self.actionMinus.triggered.connect(self.zoomOutHandler)
         self.currentTool = None
         self.last_x, self.last_y = None, None
         self.currentColor = None
+        self.canvas = None
+
+
 
     def uncheckedAll(self):
         self.actionPen.setChecked(False)
@@ -79,41 +99,46 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.currentColor = color
         print('Coloring', color)
 
+    def zoomInHandler(self):
+        self.zoomState *= 2
+        self.loadImage()
+
+    def zoomOutHandler(self):
+        self.zoomState /= 2
+        self.loadImage()
+
     def loadImage(self):
-        picture = QPixmap("Skinzones.png")
-        self.picture.setPixmap(picture)
-        self.picture.setGeometry(QRect(10, 40, picture.width(), picture.height()))
+        self.canvas = QPixmap("Skinzones.png")
+        imageSize = self.canvas.size()
+        imageSize.setWidth(imageSize.width() * self.zoomState)
+        imageSize.setHeight(imageSize.height() * self.zoomState)
+        self.picture.setPixmap(self.canvas.scaled(imageSize, Qt.KeepAspectRatioByExpanding))
+        self.picture.setGeometry(QRect(1, 1, self.width(), self.height()))
 
-    def drawSomething(self):
-        painter = QPainter(self.picture.pixmap())
-        painter.drawLine(10, 10, 300, 200)
-        painter.end()
-
-    # def mouseMoveEvent(self, e):
-    #     painter = QPainter(self.picture.pixmap())
-    #     painter.drawPoint(e.x(), e.y())
-    #     painter.end()
-    #     self.update()
 
     def mouseMoveEvent(self, e):
         if self.last_x is None:  # First event.
-            self.last_x = e.x()
-            self.last_y = e.y()
+            self.last_x = e.x() - self.canvasOffsetX
+            self.last_y = e.y() - self.canvasOffsetY
             return  # Ignore the first time.
 
         painter = QPainter(self.picture.pixmap())
         p = painter.pen()
         p.setWidth(10)
-        # p.setColor('#ff0000')
         p.setColor(self.currentColor)
         painter.setPen(p)
-        painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
+        painter.drawLine(
+            self.last_x,
+            self.last_y,
+            e.x() - self.canvasOffsetX,
+            e.y() - self.canvasOffsetY
+        )
         painter.end()
         self.update()
 
         # Update the origin for next time.
-        self.last_x = e.x()
-        self.last_y = e.y()
+        self.last_x = e.x() - self.canvasOffsetX
+        self.last_y = e.y() - self.canvasOffsetY
 
     def mouseReleaseEvent(self, e):
         self.last_x = None
