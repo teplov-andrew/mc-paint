@@ -21,12 +21,15 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="picture">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
-      <width>881</width>
-      <height>531</height>
+      <y>70</y>
+      <width>16</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -50,6 +53,21 @@
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2</width>
+      <height>2</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="grid">
+     <property name="spacing">
+      <number>1</number>
+     </property>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

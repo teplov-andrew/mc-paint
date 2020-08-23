@@ -24,10 +24,13 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.canvasOffsetX = 40
         self.canvasOffsetY = 25
         self.zoomState = 1
+        self.pixels = [[None] * 64] * 64
+
 
         # Создание формы и Ui (наш дизайн)
         self.setupUi(self)
-        self.loadImage()
+        self.initCanvas()
+        # self.loadImage()
 
         # Показать наше окно
         self.show()
@@ -115,34 +118,66 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.picture.setPixmap(self.canvas.scaled(imageSize, Qt.KeepAspectRatioByExpanding))
         self.picture.setGeometry(QRect(1, 1, self.width(), self.height()))
 
+    def initCanvas(self):
+        cellSize = 20
+        cellSpace = 1
+        cellCount = 64
+        canvasWidth = cellCount * cellSize + cellSpace * cellCount
+        canvasHeight = canvasWidth
+        self.gridLayoutWidget.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
 
-    def mouseMoveEvent(self, e):
-        if self.last_x is None:  # First event.
-            self.last_x = e.x() - self.canvasOffsetX
-            self.last_y = e.y() - self.canvasOffsetY
-            return  # Ignore the first time.
 
-        painter = QPainter(self.picture.pixmap())
-        p = painter.pen()
-        p.setWidth(10)
-        p.setColor(self.currentColor)
-        painter.setPen(p)
-        painter.drawLine(
-            self.last_x,
-            self.last_y,
-            e.x() - self.canvasOffsetX,
-            e.y() - self.canvasOffsetY
-        )
-        painter.end()
-        self.update()
+        for i in range(0, 64):
+            # create row pixels
+            for j in range(0, 64):
+                self.pixels[i][j] = QLabel(self.gridLayoutWidget)
+                # self.pixels[i].setObjectName(u"label")
+                # self.pixels[i].setAutoFillBackground(True)
+                # self.pixels[i][j].mousePressEvent = self.fill
+                # self.pixels[i][j].clicked.connect(self.fill)
+                self.pixels[i][j].triggered.connect(self.fill)
+                self.pixels[i][j].setStyleSheet(u"background-color: rgb(255, 255, 255);")
+                # self.pixels[i][j].setText("+")
 
-        # Update the origin for next time.
-        self.last_x = e.x() - self.canvasOffsetX
-        self.last_y = e.y() - self.canvasOffsetY
+                self.grid.addWidget(self.pixels[i][j], j + 1, i + 1, 1, 1)
 
-    def mouseReleaseEvent(self, e):
-        self.last_x = None
-        self.last_y = None
+        # for i in range(0, 64):
+        #     for j in range(0, 64):
+        #         self.grid.addWidget(self.pixels[i][j], j+1, i+1, 1, 1)
+
+        # print(self.pixels)
+
+    def fill(self, e):
+        dir(e)
+        # e.setStyleSheet(u"background-color: rgb(255, 0, 0);")
+
+    # def mouseMoveEvent(self, e):
+    #     if self.last_x is None:  # First event.
+    #         self.last_x = e.x() - self.canvasOffsetX
+    #         self.last_y = e.y() - self.canvasOffsetY
+    #         return  # Ignore the first time.
+    #
+    #     painter = QPainter(self.picture.pixmap())
+    #     p = painter.pen()
+    #     p.setWidth(10)
+    #     p.setColor(self.currentColor)
+    #     painter.setPen(p)
+    #     painter.drawLine(
+    #         self.last_x,
+    #         self.last_y,
+    #         e.x() - self.canvasOffsetX,
+    #         e.y() - self.canvasOffsetY
+    #     )
+    #     painter.end()
+    #     self.update()
+    #
+    #     # Update the origin for next time.
+    #     self.last_x = e.x() - self.canvasOffsetX
+    #     self.last_y = e.y() - self.canvasOffsetY
+
+    # def mouseReleaseEvent(self, e):
+    #     self.last_x = None
+    #     self.last_y = None
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
