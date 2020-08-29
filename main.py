@@ -1,7 +1,7 @@
 
 
 import sys
-from PySide2.QtGui import QPen, QPainter, QPixmap, QPalette, QColor
+from PySide2.QtGui import QPen, QPainter, QPixmap, QPalette, QColor, QCursor
 from PySide2.QtCore import QObject, Qt, QTimer, QRect, QSize
 from PySide2.QtWidgets import *
 from paint_ui import Ui_MainWindow
@@ -46,7 +46,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionMinus.triggered.connect(self.zoomOutHandler)
         self.currentTool = None
         self.last_x, self.last_y = None, None
-        self.currentColor = None
+        self.currentColor = QColor(255,0,0, 255)
         self.canvas = None
 
 
@@ -104,40 +104,57 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
     def zoomInHandler(self):
         self.zoomState *= 2
-        self.loadImage()
+        self.setCanvasSize()
+        # self.loadImage()
 
     def zoomOutHandler(self):
         self.zoomState /= 2
-        self.loadImage()
+        self.setCanvasSize()
+        # self.loadImage()
 
-    def loadImage(self):
-        self.canvas = QPixmap("Skinzones.png")
-        imageSize = self.canvas.size()
-        imageSize.setWidth(imageSize.width() * self.zoomState)
-        imageSize.setHeight(imageSize.height() * self.zoomState)
-        self.picture.setPixmap(self.canvas.scaled(imageSize, Qt.KeepAspectRatioByExpanding))
-        self.picture.setGeometry(QRect(1, 1, self.width(), self.height()))
+    # def loadImage(self):
+    #     self.canvas = QPixmap("Skinzones.png")
+    #     imageSize = self.canvas.size()
+    #     imageSize.setWidth(imageSize.width() * self.zoomState)
+    #     imageSize.setHeight(imageSize.height() * self.zoomState)
+    #     self.picture.setPixmap(self.canvas.scaled(imageSize, Qt.KeepAspectRatioByExpanding))
+    #     self.picture.setGeometry(QRect(1, 1, self.width(), self.height()))
 
-    def initCanvas(self):
-        cellSize = 20
+    def addCell(self):
+        pushButton = QPushButton(self.centralwidget)
+        pushButton.setObjectName(u"pushButton")
+        # pushButton.setGeometry(QRect(850, 10, 21, 23))
+
+        pushButton.setStyleSheet(u"border: none;\n"
+                                 "width:100px;\n"
+                                 "height:100px;\n"
+                                 "background-color: rgb(255, 255, 255);")
+
+        pushButton.pressed.connect(lambda: self.fill(pushButton))
+
+        return pushButton
+
+    def setCanvasSize(self):
+        cellSize = 20 * self.zoomState
         cellSpace = 1
         cellCount = 64
         canvasWidth = cellCount * cellSize + cellSpace * cellCount
         canvasHeight = canvasWidth
         self.gridLayoutWidget.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
 
+    def initCanvas(self):
+        self.setCanvasSize()
+
 
         for i in range(0, 64):
             # create row pixels
             for j in range(0, 64):
-                self.pixels[i][j] = QLabel(self.gridLayoutWidget)
-                # self.pixels[i].setObjectName(u"label")
-                # self.pixels[i].setAutoFillBackground(True)
-                # self.pixels[i][j].mousePressEvent = self.fill
-                # self.pixels[i][j].clicked.connect(self.fill)
-                self.pixels[i][j].triggered.connect(self.fill)
-                self.pixels[i][j].setStyleSheet(u"background-color: rgb(255, 255, 255);")
-                # self.pixels[i][j].setText("+")
+                self.pixels[i][j] = self.addCell()
+
+                # self.pixels[i][j] = QLabel(self.gridLayoutWidget)
+                # self.pixels[i][j].setStyleSheet(u"background-color: rgb(255, 255, 255);")
+                # self.pixels[i][j].setMouseTracking(True)
+                # self.pixels[i][j].setCursor(QCursor(Qt.PointingHandCursor))
 
                 self.grid.addWidget(self.pixels[i][j], j + 1, i + 1, 1, 1)
 
@@ -147,9 +164,28 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
         # print(self.pixels)
 
-    def fill(self, e):
-        dir(e)
-        # e.setStyleSheet(u"background-color: rgb(255, 0, 0);")
+    # def mouseMoveEvent(self, event):
+    #     print("On Hover")
+    #     print(event)
+
+    def fill(self, button):
+        print(self.currentTool.text())
+        if self.currentTool.text() == 'pen':
+            button.setStyleSheet(u"QPushButton\n"
+                                         "{\n"
+                                         "  border: none;\n"
+                                         "  width: 100px;\n"
+                                         "  height: 100px;\n"
+                                         "	background-color: %s;\n"
+                                         "}" % self.currentColor.name())
+        elif self.currentTool.text() == 'erase':
+            button.setStyleSheet(u"QPushButton\n"
+                                         "{\n"
+                                         "  border: none;\n"
+                                         "  width: 100px;\n"
+                                         "  height: 100px;\n"
+                                         "	background-color: rgb(255,255,255);\n"
+                                         "}")
 
     # def mouseMoveEvent(self, e):
     #     if self.last_x is None:  # First event.

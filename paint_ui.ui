@@ -113,10 +113,10 @@
    <addaction name="actionPipette"/>
    <addaction name="actionUndo"/>
    <addaction name="actionBin"/>
-   <addaction name="actionColor"/>
    <addaction name="separator"/>
    <addaction name="actionPlus"/>
    <addaction name="actionMinus"/>
+   <addaction name="actionColor"/>
   </widget>
   <action name="action">
    <property name="text">
@@ -145,12 +145,7 @@
      <normaloff>ico/pencil.png</normaloff>ico/pencil.png</iconset>
    </property>
    <property name="text">
-    <string>Pen</string>
-   </property>
-  </action>
-  <action name="action_3">
-   <property name="text">
-    <string>Ластик</string>
+    <string>pen</string>
    </property>
   </action>
   <action name="actionErase">
@@ -165,7 +160,7 @@
      <normaloff>ico/clean.png</normaloff>ico/clean.png</iconset>
    </property>
    <property name="text">
-    <string>Ластик</string>
+    <string>erase</string>
    </property>
   </action>
   <action name="actionBin">
@@ -180,7 +175,7 @@
      <normaloff>ico/bin.png</normaloff>ico/bin.png</iconset>
    </property>
    <property name="text">
-    <string>Удалить все</string>
+    <string>clear</string>
    </property>
   </action>
   <action name="actionPipette">
