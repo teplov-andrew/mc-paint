@@ -25,7 +25,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.canvasOffsetX = 40
         self.canvasOffsetY = 25
         self.zoomState = 1
-        self.pixels = [[None] * 64] * 64
+        self.pixels = [None] * 4096
 
         #Image
         self.image = Image.new("RGB", (64,64))
@@ -112,16 +112,14 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
     def saveImageHandler(self):
         rgbList = []
 
-        for i in range(0, 64):
-            for j in range(0, 64):
-                pix = self.pixels[i][j]
+        for pix in self.pixels:
                 hexColor = pix.palette().button().color().name()
                 rgbList.append(self.hex2rgb(hexColor))
 
         self.image.putdata(rgbList)
         self.image.save('skin.png')
 
-    def addCell(self, i,j):
+    def addCell(self, i):
         pushButton = QPushButton(self.centralwidget)
         pushButton.setObjectName(u"pushButton")
         pushButton.setStyleSheet(u"border: none;\n"
@@ -129,7 +127,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                  "height:100px;\n"
                                  "background-color: rgb(255,255,255);")
 
-        pushButton.pressed.connect(lambda: self.fill(i, j, pushButton))
+        pushButton.pressed.connect(lambda: self.fill(i, pushButton))
 
         return pushButton
 
@@ -143,17 +141,18 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
     def initCanvas(self):
         self.setCanvasSize()
-
+        count = 0
         for i in range(0, 64):
             # create row pixels
             for j in range(0, 64):
-                self.pixels[i][j] = self.addCell(i,j)
-                self.pixels[i][j].pressed.connect(lambda: self.fill(i, j, None))
-                self.grid.addWidget(self.pixels[i][j], j + 1, i + 1, 1, 1)
+                self.pixels[count] = self.addCell(count)
+                self.pixels[count].pressed.connect(lambda: self.fill(count, None))
+                self.grid.addWidget(self.pixels[count], j + 1, i + 1, 1, 1)
+                count += 1
 
-    def fill(self, i, j, button):
+    def fill(self, i, button):
         if self.currentTool.text() == 'pen':
-            self.pixels[i][j].setStyleSheet(u"QPushButton\n"
+            self.pixels[i].setStyleSheet(u"QPushButton\n"
                                          "{\n"
                                          "  border: none;\n"
                                          "  width: 100px;\n"
@@ -161,7 +160,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                          "	background-color: %s;\n"
                                          "}" % self.currentColor.name())
         elif self.currentTool.text() == 'erase':
-            self.pixels[i][j].setStyleSheet(u"QPushButton\n"
+            self.pixels[i].setStyleSheet(u"QPushButton\n"
                                          "{\n"
                                          "  border: none;\n"
                                          "  width: 100px;\n"
@@ -169,7 +168,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                          "	background-color: rgb(255,255,255);\n"
                                          "}")
 
-        if button: button.setStyleSheet(self.pixels[i][j].styleSheet())
+        if button: button.setStyleSheet(self.pixels[i].styleSheet())
 
     def hex2rgb(self, hexColor):
         h = hexColor.lstrip('#')

@@ -84,8 +84,8 @@
      <string>Файл</string>
     </property>
     <addaction name="action"/>
-    <addaction name="action_2"/>
-    <addaction name="action_5"/>
+    <addaction name="load"/>
+    <addaction name="save"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -123,12 +123,12 @@
     <string>Новый</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="load">
    <property name="text">
     <string>Открыть</string>
    </property>
   </action>
-  <action name="action_5">
+  <action name="save">
    <property name="text">
     <string>Сохранить</string>
    </property>
