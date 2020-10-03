@@ -5,6 +5,7 @@ from PySide2.QtGui import QPen, QPainter, QPixmap, QPalette, QColor, QCursor
 from PySide2.QtCore import QObject, Qt, QTimer, QRect, QSize
 from PySide2.QtWidgets import *
 from paint_ui import Ui_MainWindow
+from PIL import Image
 
 
 class Color(QWidget):
@@ -26,11 +27,12 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.zoomState = 1
         self.pixels = [[None] * 64] * 64
 
+        #Image
+        self.image = Image.new("RGB", (64,64))
 
         # Создание формы и Ui (наш дизайн)
         self.setupUi(self)
         self.initCanvas()
-        # self.loadImage()
 
         # Показать наше окно
         self.show()
@@ -44,9 +46,11 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionColor.triggered.connect(self.colorHandler)
         self.actionPlus.triggered.connect(self.zoomInHandler)
         self.actionMinus.triggered.connect(self.zoomOutHandler)
+        self.save.triggered.connect(self.saveImageHandler)
+
         self.currentTool = None
         self.last_x, self.last_y = None, None
-        self.currentColor = QColor(255,0,0, 255)
+        self.currentColor = QColor(255,0,0)
         self.canvas = None
 
 
@@ -92,45 +96,40 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.currentTool = self.actionUndo
         print('Undoing')
 
-
     def colorHandler(self):
-        self.uncheckedAll()
-        self.actionColor.setChecked(True)
-        self.currentTool = self.actionColor
         color = QColorDialog.getColor()
-        # self.textEdit.setTextColor(color)
         self.currentColor = color
-        print('Coloring', color)
+        print('Coloring', self.currentColor.name())
 
     def zoomInHandler(self):
         self.zoomState *= 2
         self.setCanvasSize()
-        # self.loadImage()
 
     def zoomOutHandler(self):
         self.zoomState /= 2
         self.setCanvasSize()
-        # self.loadImage()
 
-    # def loadImage(self):
-    #     self.canvas = QPixmap("Skinzones.png")
-    #     imageSize = self.canvas.size()
-    #     imageSize.setWidth(imageSize.width() * self.zoomState)
-    #     imageSize.setHeight(imageSize.height() * self.zoomState)
-    #     self.picture.setPixmap(self.canvas.scaled(imageSize, Qt.KeepAspectRatioByExpanding))
-    #     self.picture.setGeometry(QRect(1, 1, self.width(), self.height()))
+    def saveImageHandler(self):
+        rgbList = []
 
-    def addCell(self):
+        for i in range(0, 64):
+            for j in range(0, 64):
+                pix = self.pixels[i][j]
+                hexColor = pix.palette().button().color().name()
+                rgbList.append(self.hex2rgb(hexColor))
+
+        self.image.putdata(rgbList)
+        self.image.save('skin.png')
+
+    def addCell(self, i,j):
         pushButton = QPushButton(self.centralwidget)
         pushButton.setObjectName(u"pushButton")
-        # pushButton.setGeometry(QRect(850, 10, 21, 23))
-
         pushButton.setStyleSheet(u"border: none;\n"
                                  "width:100px;\n"
                                  "height:100px;\n"
-                                 "background-color: rgb(255, 255, 255);")
+                                 "background-color: rgb(255,255,255);")
 
-        pushButton.pressed.connect(lambda: self.fill(pushButton))
+        pushButton.pressed.connect(lambda: self.fill(i, j, pushButton))
 
         return pushButton
 
@@ -145,33 +144,16 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
     def initCanvas(self):
         self.setCanvasSize()
 
-
         for i in range(0, 64):
             # create row pixels
             for j in range(0, 64):
-                self.pixels[i][j] = self.addCell()
-
-                # self.pixels[i][j] = QLabel(self.gridLayoutWidget)
-                # self.pixels[i][j].setStyleSheet(u"background-color: rgb(255, 255, 255);")
-                # self.pixels[i][j].setMouseTracking(True)
-                # self.pixels[i][j].setCursor(QCursor(Qt.PointingHandCursor))
-
+                self.pixels[i][j] = self.addCell(i,j)
+                self.pixels[i][j].pressed.connect(lambda: self.fill(i, j, None))
                 self.grid.addWidget(self.pixels[i][j], j + 1, i + 1, 1, 1)
 
-        # for i in range(0, 64):
-        #     for j in range(0, 64):
-        #         self.grid.addWidget(self.pixels[i][j], j+1, i+1, 1, 1)
-
-        # print(self.pixels)
-
-    # def mouseMoveEvent(self, event):
-    #     print("On Hover")
-    #     print(event)
-
-    def fill(self, button):
-        print(self.currentTool.text())
+    def fill(self, i, j, button):
         if self.currentTool.text() == 'pen':
-            button.setStyleSheet(u"QPushButton\n"
+            self.pixels[i][j].setStyleSheet(u"QPushButton\n"
                                          "{\n"
                                          "  border: none;\n"
                                          "  width: 100px;\n"
@@ -179,7 +161,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                          "	background-color: %s;\n"
                                          "}" % self.currentColor.name())
         elif self.currentTool.text() == 'erase':
-            button.setStyleSheet(u"QPushButton\n"
+            self.pixels[i][j].setStyleSheet(u"QPushButton\n"
                                          "{\n"
                                          "  border: none;\n"
                                          "  width: 100px;\n"
@@ -187,33 +169,12 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                          "	background-color: rgb(255,255,255);\n"
                                          "}")
 
-    # def mouseMoveEvent(self, e):
-    #     if self.last_x is None:  # First event.
-    #         self.last_x = e.x() - self.canvasOffsetX
-    #         self.last_y = e.y() - self.canvasOffsetY
-    #         return  # Ignore the first time.
-    #
-    #     painter = QPainter(self.picture.pixmap())
-    #     p = painter.pen()
-    #     p.setWidth(10)
-    #     p.setColor(self.currentColor)
-    #     painter.setPen(p)
-    #     painter.drawLine(
-    #         self.last_x,
-    #         self.last_y,
-    #         e.x() - self.canvasOffsetX,
-    #         e.y() - self.canvasOffsetY
-    #     )
-    #     painter.end()
-    #     self.update()
-    #
-    #     # Update the origin for next time.
-    #     self.last_x = e.x() - self.canvasOffsetX
-    #     self.last_y = e.y() - self.canvasOffsetY
+        if button: button.setStyleSheet(self.pixels[i][j].styleSheet())
 
-    # def mouseReleaseEvent(self, e):
-    #     self.last_x = None
-    #     self.last_y = None
+    def hex2rgb(self, hexColor):
+        h = hexColor.lstrip('#')
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
