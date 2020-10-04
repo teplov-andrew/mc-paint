@@ -1,8 +1,8 @@
 
 
 import sys
-from PySide2.QtGui import QPen, QPainter, QPixmap, QPalette, QColor, QCursor
-from PySide2.QtCore import QObject, Qt, QTimer, QRect, QSize
+from PySide2.QtGui import QPalette, QColor
+from PySide2.QtCore import QRect
 from PySide2.QtWidgets import *
 from paint_ui import Ui_MainWindow
 from PIL import Image
@@ -113,11 +113,18 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         rgbList = []
 
         for pix in self.pixels:
-                hexColor = pix.palette().button().color().name()
-                rgbList.append(self.hex2rgb(hexColor))
+            hexColor = pix.palette().button().color().name()
+            rgbList.append(self.hex2rgb(hexColor))
 
         self.image.putdata(rgbList)
-        self.image.save('skin.png')
+
+        filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Select output file", dir=".", filter="Minecraft skin (*.png)")
+        if filename:
+            if '.png' != filename[-4:]:
+                filename += ".png"
+
+        self.image.save(filename)
+        print (filename, filter)
 
     def addCell(self, i):
         pushButton = QPushButton(self.centralwidget)
@@ -147,7 +154,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
             for j in range(0, 64):
                 self.pixels[count] = self.addCell(count)
                 self.pixels[count].pressed.connect(lambda: self.fill(count, None))
-                self.grid.addWidget(self.pixels[count], j + 1, i + 1, 1, 1)
+                self.grid.addWidget(self.pixels[count], i + 1, j + 1, 1, 1)
                 count += 1
 
     def fill(self, i, button):
