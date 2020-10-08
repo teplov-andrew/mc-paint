@@ -46,7 +46,9 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionColor.triggered.connect(self.colorHandler)
         self.actionPlus.triggered.connect(self.zoomInHandler)
         self.actionMinus.triggered.connect(self.zoomOutHandler)
-        self.save.triggered.connect(self.saveImageHandler)
+        self.actionNew.triggered.connect(self.newImageHandler)
+        self.actionLoad.triggered.connect(self.loadImageHandler)
+        self.actionSave.triggered.connect(self.saveImageHandler)
 
         self.currentTool = None
         self.last_x, self.last_y = None, None
@@ -109,6 +111,41 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.zoomState /= 2
         self.setCanvasSize()
 
+    def newImageHandler(self):
+        count = 0
+        for i in range(0, 64):
+            for j in range(0, 64):
+                self.pixels[count].setStyleSheet(u"QPushButton\n"
+                                                 "{\n"
+                                                 "  border: none;\n"
+                                                 "  width: 100px;\n"
+                                                 "  height: 100px;\n"
+                                                 "	background-color: rgb(255, 255, 255);\n"
+                                                 "}")
+                count += 1
+
+    def loadImageHandler(self):
+        fileName = QFileDialog.getOpenFileName(parent=self, caption="Open Image", dir=".", filter="Minecraft skin (*.png)")
+        print(fileName)
+
+        self.image = Image.open(fileName[0])
+        colors = list(self.image.getdata())
+        print('Image Load:', colors[0][0])
+        count = 0
+        for i in range(0, 64):
+            for j in range(0, 64):
+                self.pixels[count].setStyleSheet(u"QPushButton\n"
+                                             "{\n"
+                                             "  border: none;\n"
+                                             "  width: 100px;\n"
+                                             "  height: 100px;\n"
+                                             "	background-color: rgb(%s, %s, %s);\n"
+                                             "}" % (colors[count][0],
+                                                    colors[count][1],
+                                                    colors[count][2]
+                                                 ))
+                count += 1
+
     def saveImageHandler(self):
         rgbList = []
 
@@ -124,7 +161,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                 filename += ".png"
 
         self.image.save(filename)
-        print (filename, filter)
+        print(filename, filter)
 
     def addCell(self, i):
         pushButton = QPushButton(self.centralwidget)

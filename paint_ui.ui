@@ -83,9 +83,9 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="load"/>
-    <addaction name="save"/>
+    <addaction name="actionNew"/>
+    <addaction name="actionLoad"/>
+    <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -118,17 +118,17 @@
    <addaction name="actionMinus"/>
    <addaction name="actionColor"/>
   </widget>
-  <action name="action">
+  <action name="actionNew">
    <property name="text">
     <string>Новый</string>
    </property>
   </action>
-  <action name="load">
+  <action name="actionLoad">
    <property name="text">
     <string>Открыть</string>
    </property>
   </action>
-  <action name="save">
+  <action name="actionSave">
    <property name="text">
     <string>Сохранить</string>
    </property>
