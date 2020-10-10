@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(917, 583)
+        MainWindow.resize(930, 930)
         MainWindow.setStyleSheet(u"background-color: rgb(239, 239, 239);")
         MainWindow.setDocumentMode(True)
         self.actionNew = QAction(MainWindow)
@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
         self.gridLayoutWidget.setGeometry(QRect(0, 0, 2, 2))
         self.grid = QGridLayout(self.gridLayoutWidget)
-        self.grid.setSpacing(1)
+        self.grid.setSpacing(0)
         self.grid.setObjectName(u"grid")
         self.grid.setContentsMargins(0, 0, 0, 0)
         MainWindow.setCentralWidget(self.centralwidget)

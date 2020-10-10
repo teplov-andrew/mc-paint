@@ -115,13 +115,10 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         count = 0
         for i in range(0, 64):
             for j in range(0, 64):
-                self.pixels[count].setStyleSheet(u"QPushButton\n"
-                                                 "{\n"
-                                                 "  border: none;\n"
-                                                 "  width: 100px;\n"
-                                                 "  height: 100px;\n"
-                                                 "	background-color: rgb(255, 255, 255);\n"
-                                                 "}")
+                if (i+j) % 2 == 0:
+                    self.colorCell(count, (255, 255, 255))
+                else:
+                    self.colorCell(count, (200, 200, 200))
                 count += 1
 
     def loadImageHandler(self):
@@ -134,16 +131,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         count = 0
         for i in range(0, 64):
             for j in range(0, 64):
-                self.pixels[count].setStyleSheet(u"QPushButton\n"
-                                             "{\n"
-                                             "  border: none;\n"
-                                             "  width: 100px;\n"
-                                             "  height: 100px;\n"
-                                             "	background-color: rgb(%s, %s, %s);\n"
-                                             "}" % (colors[count][0],
-                                                    colors[count][1],
-                                                    colors[count][2]
-                                                 ))
+                self.colorCell(count, colors[count])
                 count += 1
 
     def saveImageHandler(self):
@@ -166,18 +154,12 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
     def addCell(self, i):
         pushButton = QPushButton(self.centralwidget)
         pushButton.setObjectName(u"pushButton")
-        pushButton.setStyleSheet(u"border: none;\n"
-                                 "width:100px;\n"
-                                 "height:100px;\n"
-                                 "background-color: rgb(255,255,255);")
-
         pushButton.pressed.connect(lambda: self.fill(i, pushButton))
-
         return pushButton
 
     def setCanvasSize(self):
         cellSize = 20 * self.zoomState
-        cellSpace = 1
+        cellSpace = 0
         cellCount = 64
         canvasWidth = cellCount * cellSize + cellSpace * cellCount
         canvasHeight = canvasWidth
@@ -193,30 +175,35 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                 self.pixels[count].pressed.connect(lambda: self.fill(count, None))
                 self.grid.addWidget(self.pixels[count], i + 1, j + 1, 1, 1)
                 count += 1
+        self.newImageHandler()
 
     def fill(self, i, button):
         if self.currentTool.text() == 'pen':
-            self.pixels[i].setStyleSheet(u"QPushButton\n"
-                                         "{\n"
-                                         "  border: none;\n"
-                                         "  width: 100px;\n"
-                                         "  height: 100px;\n"
-                                         "	background-color: %s;\n"
-                                         "}" % self.currentColor.name())
+            self.colorCell(i, self.currentColor.getRgb())
         elif self.currentTool.text() == 'erase':
-            self.pixels[i].setStyleSheet(u"QPushButton\n"
-                                         "{\n"
-                                         "  border: none;\n"
-                                         "  width: 100px;\n"
-                                         "  height: 100px;\n"
-                                         "	background-color: rgb(255,255,255);\n"
-                                         "}")
+            if i % 2 == 0:
+                self.colorCell(i, (200, 200, 200))
+            else:
+                self.colorCell(i, (255, 255, 255))
 
         if button: button.setStyleSheet(self.pixels[i].styleSheet())
 
     def hex2rgb(self, hexColor):
         h = hexColor.lstrip('#')
         return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+    def colorCell(self, pixel=0, color=(255,255,255)):
+        self.pixels[pixel].setStyleSheet(u"QPushButton\n"
+                                         "{\n"
+                                         "  border: none;\n"
+                                         "  width: 100px;\n"
+                                         "  height: 100px;\n"
+                                         "	background-color: rgb(%s, %s, %s);\n"
+                                         "}" % (color[0],
+                                                color[1],
+                                                color[2]
+                                                ))
 
 
 if __name__ == '__main__':
