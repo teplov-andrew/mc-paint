@@ -28,7 +28,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.pixels = [None] * 4096
 
         #Image
-        self.image = Image.new("RGB", (64,64))
+        self.image = Image.new("RGBA", (64,64))
 
         # Создание формы и Ui (наш дизайн)
         self.setupUi(self)
@@ -90,7 +90,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.uncheckedAll()
         self.actionPipette.setChecked(True)
         self.currentTool = self.actionPipette
-        print('Pipetting')
+        print('Pipetting', self.currentTool.text())
 
     def undoHandler(self):
         self.uncheckedAll()
@@ -115,10 +115,11 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         count = 0
         for i in range(0, 64):
             for j in range(0, 64):
-                if (i+j) % 2 == 0:
-                    self.colorCell(count, (255, 255, 255))
-                else:
-                    self.colorCell(count, (200, 200, 200))
+                self.colorCell(count, (255, 255, 255))
+                # if (i+j) % 2 == 0:
+                #     self.colorCell(count, (255, 255, 255))
+                # else:
+                #     self.colorCell(count, (200, 200, 200))
                 count += 1
 
     def loadImageHandler(self):
@@ -159,7 +160,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
     def setCanvasSize(self):
         cellSize = 20 * self.zoomState
-        cellSpace = 0
+        cellSpace = 1
         cellCount = 64
         canvasWidth = cellCount * cellSize + cellSpace * cellCount
         canvasHeight = canvasWidth
@@ -172,7 +173,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
             # create row pixels
             for j in range(0, 64):
                 self.pixels[count] = self.addCell(count)
-                self.pixels[count].pressed.connect(lambda: self.fill(count, None))
+                # self.pixels[count].pressed.connect(lambda: self.fill(count, None))
                 self.grid.addWidget(self.pixels[count], i + 1, j + 1, 1, 1)
                 count += 1
         self.newImageHandler()
@@ -180,11 +181,14 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
     def fill(self, i, button):
         if self.currentTool.text() == 'pen':
             self.colorCell(i, self.currentColor.getRgb())
+        elif self.currentTool.text() == 'pipette':
+            self.currentColor = self.pixels[i].palette().color(QPalette.Button)
         elif self.currentTool.text() == 'erase':
-            if i % 2 == 0:
-                self.colorCell(i, (200, 200, 200))
-            else:
-                self.colorCell(i, (255, 255, 255))
+            self.colorCell(i, (255, 255, 255))
+        #     if i % 2 == 0:
+        #         self.colorCell(i, (200, 200, 200))
+        #     else:
+        #         self.colorCell(i, (255, 255, 255))
 
         if button: button.setStyleSheet(self.pixels[i].styleSheet())
 

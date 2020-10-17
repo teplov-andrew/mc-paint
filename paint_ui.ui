@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>917</width>
-    <height>583</height>
+    <width>1011</width>
+    <height>813</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,40 +20,6 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="picture">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>70</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="cursor">
-     <cursorShape>CrossCursor</cursorShape>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 204, 83);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-    </property>
-   </widget>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
@@ -64,7 +30,10 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="grid">
-     <property name="spacing">
+     <property name="horizontalSpacing">
+      <number>0</number>
+     </property>
+     <property name="verticalSpacing">
       <number>1</number>
      </property>
     </layout>
@@ -75,7 +44,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>917</width>
+     <width>1011</width>
      <height>22</height>
     </rect>
    </property>
@@ -190,7 +159,7 @@
      <normaloff>ico/pipette.png</normaloff>ico/pipette.png</iconset>
    </property>
    <property name="text">
-    <string>Пипетка</string>
+    <string>pipette</string>
    </property>
   </action>
   <action name="actionUndo">
