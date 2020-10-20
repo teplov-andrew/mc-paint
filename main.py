@@ -2,7 +2,7 @@
 
 import sys
 from PySide2.QtGui import QPalette, QColor
-from PySide2.QtCore import QRect
+from PySide2.QtCore import QRect, QSize
 from PySide2.QtWidgets import *
 from paint_ui import Ui_MainWindow
 from PIL import Image
@@ -175,7 +175,9 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         canvasWidth = cellCount * cellSize + cellSpace * cellCount
         canvasHeight = canvasWidth
         self.grid.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
-        # self.scrollArea.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
+        self.scrollAreaWidgetContents.setMinimumSize(QSize(canvasWidth, canvasWidth))
+        self.scrollAreaWidgetContents.setMaximumSize(QSize(canvasWidth, canvasWidth))
+        # self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
 
     def initCanvas(self):
         self.setCanvasSize()
@@ -203,10 +205,10 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
         if button: button.setStyleSheet(self.pixels[i].styleSheet())
 
-    def hex2rgb(self, hexColor):
-        print(hexColor)
-        h = hexColor.lstrip('#')
-        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    # def hex2rgb(self, hexColor):
+    #     print(hexColor)
+    #     h = hexColor.lstrip('#')
+    #     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
     def colorCell(self, pixel=0, color=(255,255,255,0)):
