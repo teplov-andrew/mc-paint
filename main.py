@@ -47,8 +47,10 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionPlus.triggered.connect(self.zoomInHandler)
         self.actionMinus.triggered.connect(self.zoomOutHandler)
         self.actionNew.triggered.connect(self.newImageHandler)
-        self.actionLoad.triggered.connect(self.loadImageHandler)
-        self.actionSave.triggered.connect(self.saveImageHandler)
+        self.actionLoad.triggered.connect(self.loadProjectHandler)
+        self.actionSave.triggered.connect(self.saveProjectHandler)
+        self.actionImport.triggered.connect(self.loadImageHandler)
+        self.actionExport.triggered.connect(self.saveImageHandler)
 
         self.currentTool = None
         self.last_x, self.last_y = None, None
@@ -115,12 +117,18 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         count = 0
         for i in range(0, 64):
             for j in range(0, 64):
-                self.colorCell(count, (255, 255, 255))
+                self.colorCell(count, (255, 255, 255, 0))
                 # if (i+j) % 2 == 0:
                 #     self.colorCell(count, (255, 255, 255))
                 # else:
                 #     self.colorCell(count, (200, 200, 200))
                 count += 1
+
+    def loadProjectHandler(self):
+        return
+
+    def saveProjectHandler(self):
+        return
 
     def loadImageHandler(self):
         fileName = QFileDialog.getOpenFileName(parent=self, caption="Open Image", dir=".", filter="Minecraft skin (*.png)")
@@ -139,9 +147,11 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         rgbList = []
 
         for pix in self.pixels:
-            hexColor = pix.palette().button().color().name()
-            rgbList.append(self.hex2rgb(hexColor))
-
+            # hexColor = pix.palette().button().color().name()
+            rgba = pix.palette().color(QPalette.Button).toTuple()
+            print(rgba)
+            # rgbList.append(self.hex2rgb(hexColor))
+            rgbList.append(rgba)
         self.image.putdata(rgbList)
 
         filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Select output file", dir=".", filter="Minecraft skin (*.png)")
@@ -164,7 +174,8 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         cellCount = 64
         canvasWidth = cellCount * cellSize + cellSpace * cellCount
         canvasHeight = canvasWidth
-        self.gridLayoutWidget.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
+        self.grid.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
+        # self.scrollArea.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
 
     def initCanvas(self):
         self.setCanvasSize()
@@ -184,7 +195,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         elif self.currentTool.text() == 'pipette':
             self.currentColor = self.pixels[i].palette().color(QPalette.Button)
         elif self.currentTool.text() == 'erase':
-            self.colorCell(i, (255, 255, 255))
+            self.colorCell(i, (255, 255, 255, 0))
         #     if i % 2 == 0:
         #         self.colorCell(i, (200, 200, 200))
         #     else:
@@ -193,20 +204,22 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         if button: button.setStyleSheet(self.pixels[i].styleSheet())
 
     def hex2rgb(self, hexColor):
+        print(hexColor)
         h = hexColor.lstrip('#')
         return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-    def colorCell(self, pixel=0, color=(255,255,255)):
+    def colorCell(self, pixel=0, color=(255,255,255,0)):
         self.pixels[pixel].setStyleSheet(u"QPushButton\n"
                                          "{\n"
                                          "  border: none;\n"
                                          "  width: 100px;\n"
                                          "  height: 100px;\n"
-                                         "	background-color: rgb(%s, %s, %s);\n"
+                                         "	background-color: rgba(%s, %s, %s, %s);\n"
                                          "}" % (color[0],
                                                 color[1],
-                                                color[2]
+                                                color[2],
+                                                color[3]
                                                 ))
 
 
