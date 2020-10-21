@@ -116,7 +116,14 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="actionNew"/>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>Новый скин</string>
+     </property>
+     <addaction name="actionNewBody"/>
+     <addaction name="actionNewCoat"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
@@ -160,11 +167,6 @@
    <addaction name="actionMinus"/>
    <addaction name="actionColor"/>
   </widget>
-  <action name="actionNew">
-   <property name="text">
-    <string>Новый</string>
-   </property>
-  </action>
   <action name="actionLoad">
    <property name="text">
     <string>Открыть</string>
@@ -293,6 +295,16 @@
   <action name="actionAbout">
    <property name="text">
     <string>О программе</string>
+   </property>
+  </action>
+  <action name="actionNewBody">
+   <property name="text">
+    <string>Тело</string>
+   </property>
+  </action>
+  <action name="actionNewCoat">
+   <property name="text">
+    <string>Плащ</string>
    </property>
   </action>
  </widget>

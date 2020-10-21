@@ -48,7 +48,8 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionColor.triggered.connect(self.colorHandler)
         self.actionPlus.triggered.connect(self.zoomInHandler)
         self.actionMinus.triggered.connect(self.zoomOutHandler)
-        self.actionNew.triggered.connect(self.newImageHandler)
+        self.actionNewBody.triggered.connect(self.newImageHandler)
+        self.actionNewCoat.triggered.connect(self.newImageHandler)
         self.actionLoad.triggered.connect(self.loadProjectHandler)
         self.actionSave.triggered.connect(self.saveProjectHandler)
         self.actionImport.triggered.connect(self.loadImageHandler)
@@ -117,13 +118,16 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
     def newImageHandler(self):
         count = 0
+        file = open(r'skin.mc', 'rb')
+        colors = pickle.load(file)
+        file.close()
         for i in range(0, 64):
             for j in range(0, 64):
-                self.colorCell(count, (0, 0, 0, 0))
+                self.colorCell(count, (255, 255, 255, 0))
                 if (i+j) % 2 == 0:
-                    self.colorCellBg(count, (255, 255, 255, 100))
+                    self.colorCellBg(count, (colors[count][0], colors[count][1], colors[count][2], 150))
                 else:
-                    self.colorCellBg(count, (200, 200, 200, 100))
+                    self.colorCellBg(count, (colors[count][0], colors[count][1], colors[count][2], 100))
                 count += 1
 
     def loadProjectHandler(self):
@@ -131,20 +135,26 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                                filter="MC Paint project (*.mc)")
         print(fileName)
         file = open(fileName[0], 'rb')
-        colors = pickle.load(file)
+        (colors, colorsBg) = pickle.load(file)
         file.close()
         print('Prject Load:', colors[0][0])
         count = 0
         for i in range(0, 64):
             for j in range(0, 64):
                 self.colorCell(count, colors[count])
+                self.colorCellBg(count, colorsBg[count])
                 count += 1
 
     def saveProjectHandler(self):
         rgbList = []
+        rgbListBg = []
         for pix in self.pixels:
             rgba = pix.palette().color(QPalette.Button).toTuple()
             rgbList.append(rgba)
+
+        for pix in self.pixelsBg:
+            rgba = pix.palette().color(QPalette.Button).toTuple()
+            rgbListBg.append(rgba)
 
         filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Select output file", dir=".",
                                                        filter="MC Paint project (*.mc)")
@@ -153,7 +163,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                 filename += ".mc"
 
         afile = open(filename, 'wb')
-        pickle.dump(rgbList, afile)
+        pickle.dump((rgbList, rgbListBg), afile)
         afile.close()
         print(filename, filter)
 
