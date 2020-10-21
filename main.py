@@ -1,6 +1,7 @@
 
 
 import sys
+import pickle
 from PySide2.QtGui import QPalette, QColor
 from PySide2.QtCore import QRect, QSize
 from PySide2.QtWidgets import *
@@ -25,6 +26,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.canvasOffsetX = 40
         self.canvasOffsetY = 25
         self.zoomState = 1
+        self.pixelsBg = [None] * 4096
         self.pixels = [None] * 4096
 
         #Image
@@ -117,18 +119,43 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         count = 0
         for i in range(0, 64):
             for j in range(0, 64):
-                self.colorCell(count, (255, 255, 255, 0))
-                # if (i+j) % 2 == 0:
-                #     self.colorCell(count, (255, 255, 255))
-                # else:
-                #     self.colorCell(count, (200, 200, 200))
+                self.colorCell(count, (0, 0, 0, 0))
+                if (i+j) % 2 == 0:
+                    self.colorCellBg(count, (255, 255, 255, 100))
+                else:
+                    self.colorCellBg(count, (200, 200, 200, 100))
                 count += 1
 
     def loadProjectHandler(self):
-        return
+        fileName = QFileDialog.getOpenFileName(parent=self, caption="Open MC Paint project", dir=".",
+                                               filter="MC Paint project (*.mc)")
+        print(fileName)
+        file = open(fileName[0], 'rb')
+        colors = pickle.load(file)
+        file.close()
+        print('Prject Load:', colors[0][0])
+        count = 0
+        for i in range(0, 64):
+            for j in range(0, 64):
+                self.colorCell(count, colors[count])
+                count += 1
 
     def saveProjectHandler(self):
-        return
+        rgbList = []
+        for pix in self.pixels:
+            rgba = pix.palette().color(QPalette.Button).toTuple()
+            rgbList.append(rgba)
+
+        filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Select output file", dir=".",
+                                                       filter="MC Paint project (*.mc)")
+        if filename:
+            if '.mc' != filename[-3:]:
+                filename += ".mc"
+
+        afile = open(filename, 'wb')
+        pickle.dump(rgbList, afile)
+        afile.close()
+        print(filename, filter)
 
     def loadImageHandler(self):
         fileName = QFileDialog.getOpenFileName(parent=self, caption="Open Image", dir=".", filter="Minecraft skin (*.png)")
@@ -154,7 +181,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
             rgbList.append(rgba)
         self.image.putdata(rgbList)
 
-        filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Select output file", dir=".", filter="Minecraft skin (*.png)")
+        filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Select export file", dir=".", filter="Minecraft skin (*.png)")
         if filename:
             if '.png' != filename[-4:]:
                 filename += ".png"
@@ -177,7 +204,6 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.grid.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
         self.scrollAreaWidgetContents.setMinimumSize(QSize(canvasWidth, canvasWidth))
         self.scrollAreaWidgetContents.setMaximumSize(QSize(canvasWidth, canvasWidth))
-        # self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, canvasWidth, canvasHeight))
 
     def initCanvas(self):
         self.setCanvasSize()
@@ -185,10 +211,12 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         for i in range(0, 64):
             # create row pixels
             for j in range(0, 64):
+                self.pixelsBg[count] = self.addCell(count)
                 self.pixels[count] = self.addCell(count)
-                # self.pixels[count].pressed.connect(lambda: self.fill(count, None))
+                self.grid.addWidget(self.pixelsBg[count], i + 1, j + 1, 1, 1)
                 self.grid.addWidget(self.pixels[count], i + 1, j + 1, 1, 1)
                 count += 1
+
         self.newImageHandler()
 
     def fill(self, i, button):
@@ -211,7 +239,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
     #     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-    def colorCell(self, pixel=0, color=(255,255,255,0)):
+    def colorCell(self, pixel=0, color=(0,0,0,0)):
         self.pixels[pixel].setStyleSheet(u"QPushButton\n"
                                          "{\n"
                                          "  border: none;\n"
@@ -224,6 +252,18 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
                                                 color[3]
                                                 ))
 
+    def colorCellBg(self, pixel=0, color=(0,0,0,0)):
+        self.pixelsBg[pixel].setStyleSheet(u"QPushButton\n"
+                                         "{\n"
+                                         "  border: none;\n"
+                                         "  width: 100px;\n"
+                                         "  height: 100px;\n"
+                                         "	background-color: rgba(%s, %s, %s, %s);\n"
+                                         "}" % (color[0],
+                                                color[1],
+                                                color[2],
+                                                color[3]
+                                                ))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

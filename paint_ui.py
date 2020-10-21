@@ -22,6 +22,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setWindowModality(Qt.NonModal)
+        MainWindow.resize(920, 641)
         MainWindow.setToolButtonStyle(Qt.ToolButtonIconOnly)
         MainWindow.setTabShape(QTabWidget.Rounded)
         self.actionNew = QAction(MainWindow)
@@ -97,6 +98,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(-474, 0, 1344, 1344))
         self.scrollAreaWidgetContents.setMinimumSize(QSize(1344, 1344))
         self.scrollAreaWidgetContents.setMaximumSize(QSize(1344, 1344))
         self.scrollAreaWidgetContents.setSizeIncrement(QSize(1, 1))
@@ -105,7 +107,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.grid = QGridLayout()
-        self.grid.setSpacing(1)
+        self.grid.setSpacing(0)
         self.grid.setObjectName(u"grid")
 
         self.gridLayout.addLayout(self.grid, 0, 0, 1, 1)
@@ -117,7 +119,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 949, 22))
+        self.menubar.setGeometry(QRect(0, 0, 920, 22))
         self.menubar.setAutoFillBackground(False)
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")

@@ -5,6 +5,14 @@
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>920</width>
+    <height>641</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Minecraft Paint</string>
   </property>
@@ -37,6 +45,14 @@
        <bool>true</bool>
       </property>
       <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>-474</x>
+         <y>0</y>
+         <width>1344</width>
+         <height>1344</height>
+        </rect>
+       </property>
        <property name="minimumSize">
         <size>
          <width>1344</width>
@@ -74,7 +90,7 @@
         <item row="0" column="0">
          <layout class="QGridLayout" name="grid">
           <property name="spacing">
-           <number>1</number>
+           <number>0</number>
           </property>
          </layout>
         </item>
@@ -89,7 +105,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>949</width>
+     <width>920</width>
      <height>22</height>
     </rect>
    </property>
