@@ -47,7 +47,7 @@
       <widget class="QWidget" name="scrollAreaWidgetContents">
        <property name="geometry">
         <rect>
-         <x>-474</x>
+         <x>0</x>
          <y>0</y>
          <width>1344</width>
          <height>1344</height>
@@ -120,6 +120,10 @@
      <property name="title">
       <string>Новый скин</string>
      </property>
+     <property name="icon">
+      <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+       <normaloff>:/images/new.png</normaloff>:/images/new.png</iconset>
+     </property>
      <addaction name="actionNewBody"/>
      <addaction name="actionNewCoat"/>
     </widget>
@@ -128,7 +132,6 @@
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionImport"/>
-    <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -168,11 +171,19 @@
    <addaction name="actionColor"/>
   </widget>
   <action name="actionLoad">
+   <property name="icon">
+    <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+     <normaloff>:/images/open.png</normaloff>:/images/open.png</iconset>
+   </property>
    <property name="text">
     <string>Открыть</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+     <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
+   </property>
    <property name="text">
     <string>Сохранить</string>
    </property>
@@ -273,6 +284,10 @@
    </property>
   </action>
   <action name="actionImport">
+   <property name="icon">
+    <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+     <normaloff>:/images/paste.png</normaloff>:/images/paste.png</iconset>
+   </property>
    <property name="text">
     <string>Импорт</string>
    </property>
