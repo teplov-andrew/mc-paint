@@ -57,7 +57,7 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
 
         self.currentTool = None
         self.last_x, self.last_y = None, None
-        self.currentColor = QColor(255,0,0)
+        self.currentColor = QColor(255,0,0,255)
         self.canvas = None
 
     def mousePressEvent(self, QMouseEvent):
@@ -262,7 +262,13 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         if self.currentTool.text() == 'pen':
             self.colorCell(i, self.currentColor.getRgb())
         elif self.currentTool.text() == 'pipette':
-            self.currentColor = self.pixels[i].palette().color(QPalette.Button)
+            ## Проверяем, что верхний слой прозрачный, тогда определяем цвет из подложки
+            if self.pixels[i].palette().color(QPalette.Button).toTuple()[3] == 0:
+                currentColorTuple = self.pixelsBg[i].palette().color(QPalette.Button).toTuple()
+                self.currentColor = QColor(currentColorTuple[0], currentColorTuple[1], currentColorTuple[2], 255)
+            else:
+                currentColorTuple = self.pixels[i].palette().color(QPalette.Button).toTuple()
+                self.currentColor = QColor(currentColorTuple[0], currentColorTuple[1], currentColorTuple[2], 255)
         elif self.currentTool.text() == 'erase':
             self.colorCell(i, (255, 255, 255, 0))
 
