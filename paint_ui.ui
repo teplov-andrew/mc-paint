@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Minecraft Paint</string>
+   <string>MC Paint</string>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -116,31 +116,13 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <widget class="QMenu" name="menuNew">
-     <property name="title">
-      <string>Новый скин</string>
-     </property>
-     <property name="icon">
-      <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
-       <normaloff>:/images/new.png</normaloff>:/images/new.png</iconset>
-     </property>
-     <addaction name="actionNewBody"/>
-     <addaction name="actionNewCoat"/>
-    </widget>
-    <addaction name="menuNew"/>
+    <addaction name="actionNew"/>
     <addaction name="actionLoad"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionImport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Правка</string>
-    </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -149,7 +131,6 @@
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
@@ -172,7 +153,7 @@
   </widget>
   <action name="actionLoad">
    <property name="icon">
-    <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+    <iconset>
      <normaloff>:/images/open.png</normaloff>:/images/open.png</iconset>
    </property>
    <property name="text">
@@ -181,7 +162,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+    <iconset>
      <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
    </property>
    <property name="text">
@@ -196,11 +177,14 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>ico/pencil.png</normaloff>ico/pencil.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ico/pencil.png</normaloff>:/icons/ico/pencil.png</iconset>
    </property>
    <property name="text">
     <string>pen</string>
+   </property>
+   <property name="toolTip">
+    <string>Рисовать</string>
    </property>
   </action>
   <action name="actionErase">
@@ -211,26 +195,14 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>ico/clean.png</normaloff>ico/clean.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ico/clean.png</normaloff>:/icons/ico/clean.png</iconset>
    </property>
    <property name="text">
     <string>erase</string>
    </property>
-  </action>
-  <action name="actionBin">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>ico/bin.png</normaloff>ico/bin.png</iconset>
-   </property>
-   <property name="text">
-    <string>clear</string>
+   <property name="toolTip">
+    <string>Стереть</string>
    </property>
   </action>
   <action name="actionPipette">
@@ -241,55 +213,59 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>ico/pipette.png</normaloff>ico/pipette.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ico/pipette.png</normaloff>:/icons/ico/pipette.png</iconset>
    </property>
    <property name="text">
     <string>pipette</string>
    </property>
-  </action>
-  <action name="actionQuit">
-   <property name="text">
-    <string>Выход</string>
+   <property name="toolTip">
+    <string>Скопировать цвет</string>
    </property>
   </action>
   <action name="actionColor">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
-    <iconset>
-     <normaloff>ico/paint.png</normaloff>ico/paint.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ico/paint.png</normaloff>:/icons/ico/paint.png</iconset>
    </property>
    <property name="text">
     <string>Color</string>
    </property>
+   <property name="toolTip">
+    <string>Выбрать цвет</string>
+   </property>
   </action>
   <action name="actionPlus">
    <property name="icon">
-    <iconset>
-     <normaloff>ico/plus.png</normaloff>ico/plus.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ico/plus.png</normaloff>:/icons/ico/plus.png</iconset>
    </property>
    <property name="text">
     <string>Plus</string>
    </property>
+   <property name="toolTip">
+    <string>Приблизить</string>
+   </property>
   </action>
   <action name="actionMinus">
    <property name="icon">
-    <iconset>
-     <normaloff>ico/minus.png</normaloff>ico/minus.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ico/minus.png</normaloff>:/icons/ico/minus.png</iconset>
    </property>
    <property name="text">
     <string>Minus</string>
    </property>
+   <property name="toolTip">
+    <string>Отдалить</string>
+   </property>
   </action>
   <action name="actionImport">
    <property name="icon">
-    <iconset resource="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc">
+    <iconset>
      <normaloff>:/images/paste.png</normaloff>:/images/paste.png</iconset>
    </property>
    <property name="text">
-    <string>Импорт</string>
+    <string>Импорт фона</string>
    </property>
   </action>
   <action name="actionExport">
@@ -298,8 +274,14 @@
    </property>
   </action>
   <action name="actionUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Отменить</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionRedo">
@@ -322,9 +304,19 @@
     <string>Плащ</string>
    </property>
   </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>Создать</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="venv/Lib/site-packages/PySide2/examples/widgets/mainwindows/application/application.qrc"/>
+  <include location="icons.qrc"/>
  </resources>
  <connections/>
 </ui>

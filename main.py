@@ -1,11 +1,11 @@
 
 
 import sys
-import pickle
 from PySide2.QtGui import QPalette, QColor
-from PySide2.QtCore import QRect, QSize
+from PySide2.QtCore import QRect, QSize, Qt
 from PySide2.QtWidgets import *
 from paint_ui import Ui_MainWindow
+from about import Ui_DialogAbout
 from PIL import Image
 
 
@@ -19,13 +19,31 @@ class Color(QWidget):
         palette.setColor(QPalette.Window, QColor(color))
         self.setPalette(palette)
 
+class CustomDialog(QDialog):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomDialog, self).__init__(*args, **kwargs)
+
+        self.setWindowTitle("HELLO!")
+
+        QBtn = QDialogButtonBox.Close
+
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
+
+
 class Paint(QMainWindow, Ui_MainWindow, QWidget):
     # Конструктор класса
     def __init__(self):
         super().__init__()
         self.canvasOffsetX = 40
         self.canvasOffsetY = 25
-        self.zoomState = 1
+        self.zoomState = .8
         self.pixelsBg = [None] * 4096
         self.pixels = [None] * 4096
 
@@ -42,18 +60,15 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionQuit.triggered.connect(self.quitHandler)
         self.actionPen.triggered.connect(self.penHandler)
         self.actionErase.triggered.connect(self.eraseHandler)
-        self.actionBin.triggered.connect(self.binHandler)
         self.actionPipette.triggered.connect(self.pipetteHandler)
-        self.actionUndo.triggered.connect(self.undoHandler)
+        self.actionAbout.triggered.connect(self.aboutHandler)
         self.actionColor.triggered.connect(self.colorHandler)
         self.actionPlus.triggered.connect(self.zoomInHandler)
         self.actionMinus.triggered.connect(self.zoomOutHandler)
-        self.actionNewBody.triggered.connect(self.newImageHandler)
-        self.actionNewCoat.triggered.connect(self.newImageHandler)
+        self.actionNew.triggered.connect(self.newImageHandler)
         self.actionLoad.triggered.connect(self.loadImageHandler)
         self.actionSave.triggered.connect(self.saveImageHandler)
         self.actionImport.triggered.connect(self.loadTemplateHandler)
-        self.actionExport.triggered.connect(self.saveImageHandler)
 
         self.currentTool = None
         self.last_x, self.last_y = None, None
@@ -70,11 +85,16 @@ class Paint(QMainWindow, Ui_MainWindow, QWidget):
         self.actionErase.setChecked(False)
         self.actionPipette.setChecked(False)
         self.actionUndo.setChecked(False)
-        self.actionBin.setChecked(False)
-        self.actionColor.setChecked(False)
 
     def quitHandler(self):
         self.close()
+
+    def aboutHandler(self):
+        dialog = QDialog()
+        dialog.ui = Ui_DialogAbout()
+        dialog.ui.setupUi(dialog)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.exec_()
 
     def penHandler(self):
         self.uncheckedAll()
